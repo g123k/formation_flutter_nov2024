@@ -6,3 +6,8 @@ groups:
     class_name: AppImages
     package: res
     types: [ .png ]
+
+  - path: res/svg
+    class_name: AppVectorialImages
+    package: res
+    types: [ .svg ]
