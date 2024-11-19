@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/res/app_colors.dart';
+import 'package:flutter_application_1/res/app_icons.dart';
+import 'package:flutter_application_1/res/app_images.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
@@ -42,8 +45,8 @@ class DetailsScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Petits pois et carottes'),
-                    Text('Cassegrain'),
+                    ProductHeader(),
+                    ProductScores(),
                   ],
                 ),
               ),
@@ -93,16 +96,114 @@ class DetailsScreenStack extends StatelessWidget {
                 end: 20.0,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Petits pois et carottes'),
-                  Text('Cassegrain'),
+                  ProductHeader(),
+                  ProductScores(),
                 ],
               ),
             ),
           )
         ],
       ),
+    );
+  }
+}
+
+class ProductHeader extends StatelessWidget {
+  const ProductHeader({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Petits pois et carottes'),
+        Text('Cassegrain'),
+      ],
+    );
+  }
+}
+
+class ProductScores extends StatelessWidget {
+  const ProductScores({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: AppColors.gray1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  flex: 44,
+                  child: ProductNutriScore(),
+                ),
+                VerticalDivider(),
+                Expanded(
+                  flex: 56,
+                  child: ProductNovaScore(),
+                ),
+              ],
+            ),
+          ),
+          Divider(),
+          ProductEcoScore(),
+        ],
+      ),
+    );
+  }
+}
+
+class ProductNutriScore extends StatelessWidget {
+  const ProductNutriScore({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Nutri-Score'),
+        Image.asset(
+          AppImages.nutriscoreA,
+          height: 100,
+        ),
+      ],
+    );
+  }
+}
+
+class ProductNovaScore extends StatelessWidget {
+  const ProductNovaScore({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Groupe NOVA'),
+        Text('Produits alimentaires et boissons…')
+      ],
+    );
+  }
+}
+
+class ProductEcoScore extends StatelessWidget {
+  const ProductEcoScore({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('EcoScore'),
+        Icon(AppIcons.ecoscore_d),
+      ],
     );
   }
 }
