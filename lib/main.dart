@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/res/app_colors.dart';
-import 'package:flutter_application_1/screens/homepage.dart';
+import 'package:flutter_application_1/screens/details_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           type: BottomNavigationBarType.fixed,
         ),
       ),
-      home: HomePage(),
+      home: DetailsScreen(),
     );
   }
 }
