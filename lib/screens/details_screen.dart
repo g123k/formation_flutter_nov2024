@@ -3,24 +3,51 @@ import 'package:flutter_application_1/model/product.dart';
 import 'package:flutter_application_1/res/app_colors.dart';
 import 'package:flutter_application_1/res/app_icons.dart';
 import 'package:flutter_application_1/res/app_images.dart';
+import 'package:flutter_application_1/screens/product_provider.dart';
+import 'package:provider/provider.dart';
 
-class DetailsScreen extends StatefulWidget {
-  static const double kImageHeight = 300.0;
-
+class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
 
   @override
-  State<DetailsScreen> createState() => _DetailsScreenState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => ProductLoader()..getProduct(),
+      child: Consumer<ProductLoader>(
+        builder: (BuildContext context, ProductLoader productLoader, _) {
+          if (productLoader.product == null) {
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            );
+          } else {
+            return DetailsScreenBody();
+          }
+        },
+      ),
+    );
+  }
+}
+
+class DetailsScreenBody extends StatefulWidget {
+  static const double kImageHeight = 300.0;
+
+  const DetailsScreenBody({super.key});
+
+  @override
+  State<DetailsScreenBody> createState() => _DetailsScreenBodyState();
 }
 
 double _scrollProgress(BuildContext context) {
   ScrollController? controller = PrimaryScrollController.of(context);
   return !controller.hasClients
       ? 0
-      : (controller.position.pixels / DetailsScreen.kImageHeight).clamp(0, 1);
+      : (controller.position.pixels / DetailsScreenBody.kImageHeight)
+          .clamp(0, 1);
 }
 
-class _DetailsScreenState extends State<DetailsScreen> {
+class _DetailsScreenBodyState extends State<DetailsScreenBody> {
   double _currentScrollProgress = 0.0;
 
   // Quand on scroll, on redraw pour changer la couleur de l'image
@@ -37,9 +64,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final ScrollController scrollController =
         PrimaryScrollController.of(context);
 
-    /// TODO : Remplacer les chaines de caractères en dur par cet objet
-    Product product = generateProduct();
-
     return Material(
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
@@ -47,15 +71,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
           return false;
         },
         child: Stack(children: [
-          Image.network(
-            'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=2510&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            width: double.infinity,
-            height: DetailsScreen.kImageHeight,
-            cacheHeight: (DetailsScreen.kImageHeight * 3).toInt(),
-            fit: BoxFit.cover,
-            color: Colors.black.withOpacity(_currentScrollProgress),
-            colorBlendMode: BlendMode.srcATop,
-          ),
+          Builder(builder: (BuildContext context) {
+            return Image.network(
+              Provider.of<ProductLoader>(context).product!.picture ?? '',
+              width: double.infinity,
+              height: DetailsScreenBody.kImageHeight,
+              cacheHeight: (DetailsScreenBody.kImageHeight * 3).toInt(),
+              fit: BoxFit.cover,
+              color: Colors.black.withOpacity(_currentScrollProgress),
+              colorBlendMode: BlendMode.srcATop,
+            );
+          }),
           Positioned.fill(
             child: SingleChildScrollView(
               controller: scrollController,
@@ -64,7 +90,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 trackVisibility: true,
                 child: Container(
                   margin: const EdgeInsetsDirectional.only(
-                    top: DetailsScreen.kImageHeight - 30.0,
+                    top: DetailsScreenBody.kImageHeight - 30.0,
                   ),
                   child: const _Body(),
                 ),
@@ -197,14 +223,14 @@ class _Header extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Petits pois et carottes',
+          Provider.of<ProductLoader>(context).product!.name ?? '',
           style: textTheme.displayLarge,
         ),
         const SizedBox(
           height: 3.0,
         ),
         Text(
-          'Cassegrain',
+          Provider.of<ProductLoader>(context).product!.brands?.join(', ') ?? '',
           style: textTheme.displayMedium,
         ),
         const SizedBox(

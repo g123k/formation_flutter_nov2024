@@ -67,3 +67,25 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+class ColorIW extends InheritedWidget {
+  const ColorIW({
+    required this.color,
+    required super.child,
+    super.key,
+  });
+
+  final Color color;
+
+  static ColorIW of(BuildContext context) {
+    final ColorIW? result =
+        context.dependOnInheritedWidgetOfExactType<ColorIW>();
+    assert(result != null, 'No ColorIH found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(ColorIW oldWidget) {
+    return oldWidget.color != color;
+  }
+}
