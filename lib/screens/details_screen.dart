@@ -3,27 +3,31 @@ import 'package:flutter_application_1/model/product.dart';
 import 'package:flutter_application_1/res/app_colors.dart';
 import 'package:flutter_application_1/res/app_icons.dart';
 import 'package:flutter_application_1/res/app_images.dart';
-import 'package:flutter_application_1/screens/product_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_application_1/screens/product_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DetailsScreen extends StatelessWidget {
   const DetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ProductLoader()..getProduct(),
-      child: Consumer<ProductLoader>(
-        builder: (BuildContext context, ProductLoader productLoader, _) {
-          if (productLoader.product == null) {
-            return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator.adaptive(),
+    return BlocProvider(
+      create: (_) => ProductBloc()..add(ProductLoadEvent('01234998489')),
+      child: BlocBuilder<ProductBloc, ProductState>(
+        builder: (BuildContext context, ProductState state) {
+          return switch (state) {
+            ProductStateLoading() => Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
               ),
-            );
-          } else {
-            return DetailsScreenBody();
-          }
+            ProductStateSuccess() => DetailsScreenBody(),
+            ProductStateError() => Scaffold(
+                body: Center(
+                  child: Text('Erreur'),
+                ),
+              ),
+          };
         },
       ),
     );
@@ -73,7 +77,11 @@ class _DetailsScreenBodyState extends State<DetailsScreenBody> {
         child: Stack(children: [
           Builder(builder: (BuildContext context) {
             return Image.network(
-              Provider.of<ProductLoader>(context).product!.picture ?? '',
+              (BlocProvider.of<ProductBloc>(context).state
+                          as ProductStateSuccess)
+                      .product
+                      .picture ??
+                  '',
               width: double.infinity,
               height: DetailsScreenBody.kImageHeight,
               cacheHeight: (DetailsScreenBody.kImageHeight * 3).toInt(),
@@ -222,10 +230,10 @@ class _Header extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Consumer<ProductLoader>(
-          builder: (BuildContext context, ProductLoader loader, _) {
+        BlocBuilder<ProductBloc, ProductState>(
+          builder: (BuildContext context, ProductState state) {
             return Text(
-              Provider.of<ProductLoader>(context).product!.name ?? '',
+              (state as ProductStateSuccess).product.name ?? '',
               style: textTheme.displayLarge,
             );
           },
@@ -234,7 +242,11 @@ class _Header extends StatelessWidget {
           height: 3.0,
         ),
         Text(
-          Provider.of<ProductLoader>(context).product!.brands?.join(', ') ?? '',
+          (BlocProvider.of<ProductBloc>(context).state as ProductStateSuccess)
+                  .product
+                  .brands
+                  ?.join(', ') ??
+              '',
           style: textTheme.displayMedium,
         ),
         const SizedBox(
