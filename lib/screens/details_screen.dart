@@ -222,9 +222,13 @@ class _Header extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          Provider.of<ProductLoader>(context).product!.name ?? '',
-          style: textTheme.displayLarge,
+        Consumer<ProductLoader>(
+          builder: (BuildContext context, ProductLoader loader, _) {
+            return Text(
+              Provider.of<ProductLoader>(context).product!.name ?? '',
+              style: textTheme.displayLarge,
+            );
+          },
         ),
         const SizedBox(
           height: 3.0,
