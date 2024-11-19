@@ -37,6 +37,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
     final ScrollController scrollController =
         PrimaryScrollController.of(context);
 
+    /// TODO : Remplacer les chaines de caractères en dur par cet objet
+    Product product = generateProduct();
+
     return Material(
       child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
