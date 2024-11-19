@@ -3,6 +3,7 @@ import 'package:flutter_application_1/res/app_colors.dart';
 import 'package:flutter_application_1/res/app_icons.dart';
 import 'package:flutter_application_1/res/app_vectorial_images.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 /// Avec Flex
 class HomePage extends StatelessWidget {
@@ -41,7 +42,9 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              onPressed: () {},
+              onPressed: () {
+                GoRouter.of(context).push('/details');
+              },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
